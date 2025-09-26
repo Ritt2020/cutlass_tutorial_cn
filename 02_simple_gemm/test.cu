@@ -4,7 +4,7 @@
 //
 // 关键点：
 // - A、B、C 均为列主序存储（cutlass::layout::ColumnMajor）
-// - 矩阵A使用高斯分布随机填充，矩阵B使用顺序填充
+// - 矩阵A 矩阵B使用高斯分布随机填充
 // - 使用 cutlass::gemm::device::Gemm 作为设备端内核
 // - 同时使用 CPU GEMM API 和 GPU GEMM API 进行计算并比较结果
 //
