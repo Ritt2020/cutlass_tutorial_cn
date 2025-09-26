@@ -1,5 +1,6 @@
 # Makefile for CUTLASS GEMM test
 # 编译 CUTLASS 半精度 GEMM 示例
+# 请修改为自己的 CUTLASS 路径、CUDA 路径、编译器路径、架构等。
 
 # 编译器设置
 NVCC = nvcc

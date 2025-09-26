@@ -8,12 +8,6 @@
 // - 使用 cutlass::gemm::device::Gemm 作为设备端内核
 // - 同时使用 CPU GEMM API 和 GPU GEMM API 进行计算并比较结果
 //
-// 依赖：请确保 CUTLASS 头文件位于 /sharedir44-48/wanghy/cutlass/include/cutlass
-// 编译示例（可能需要根据你的 CUDA/CMake 环境调整）：
-//   nvcc -I/sharedir44-48/wanghy/cutlass/include -I/sharedir44-48/wanghy/cutlass/tools/util/include -O3 -arch=sm_80 \
-//        /sharedir44-48/wanghy/cuda_playground/cutlass/test.cu -o test_gemm
-// 运行：
-//   ./test_gemm
 
 // 标准库头文件
 #include <iostream>
