@@ -1,0 +1,43 @@
+# 编译产物
+*.o
+*.so
+*.a
+*.exe
+test_gemm
+test_gemm.exe
+
+# CUDA 编译产物
+*.cubin
+*.fatbin
+*.ptx
+
+# 调试文件
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# 临时文件
+*~
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# IDE 文件
+.vscode/
+.idea/
+*.vcxproj
+*.vcxproj.filters
+*.sln
+
+# 构建目录
+build/
+bin/
+lib/
+
+# 日志文件
+*.log
+
+# 错误输出文件
+errors_*.csv
