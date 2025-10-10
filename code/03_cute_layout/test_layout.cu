@@ -175,7 +175,101 @@ int main() {
     print("  Shape:  "); print(shape(L5)); print("\n");
     print("  Stride: "); print(stride(L5)); print("\n");
     print_layout(L5);
-    print_latex(L5);
+
+    // ============================================================
+    // 布局兼容性测试
+    // ============================================================
+    print_section("布局兼容性 (Layout Compatibility)");
+
+    std::cout << "\n测试各种 shape 的兼容性：\n\n";
+
+    // 创建测试 shape
+    auto shape_24 = make_shape(24);
+    auto shape_32 = make_shape(32);
+    auto shape_4x6 = make_shape(Int<4>{}, Int<6>{});
+    auto shape_22x6 = make_shape(make_shape(Int<2>{}, Int<2>{}), Int<6>{});
+    auto shape_22x32 = make_shape(make_shape(Int<2>{}, Int<2>{}), 
+                                   make_shape(Int<3>{}, Int<2>{}));
+    auto shape_23x4 = make_shape(make_shape(Int<2>{}, Int<3>{}), Int<4>{});
+    auto shape_tuple24 = make_shape(make_tuple(24));
+
+    std::cout << "【示例 1】Shape 24 vs Shape 32\n";
+    print("  shape_24:  "); print(shape_24); print("\n");
+    print("  shape_32:  "); print(shape_32); print("\n");
+    print("  size(24):  "); print(size(shape_24)); print("\n");
+    print("  size(32):  "); print(size(shape_32)); print("\n");
+    std::cout << "  结果: ❌ 不兼容（size 不相等）\n";
+
+    std::cout << "\n【示例 2】Shape 24 vs Shape (4,6)\n";
+    print("  shape_24:    "); print(shape_24); print("\n");
+    print("  shape_(4,6): "); print(shape_4x6); print("\n");
+    print("  size(24):    "); print(size(shape_24)); print("\n");
+    print("  size(4,6):   "); print(size(shape_4x6)); print("\n");
+    std::cout << "  结果: ✅ 兼容（24 = 4×6，一维可映射到二维）\n";
+
+    std::cout << "\n【示例 3】Shape (4,6) vs Shape ((2,2),6)\n";
+    print("  shape_(4,6):      "); print(shape_4x6); print("\n");
+    print("  shape_((2,2),6):  "); print(shape_22x6); print("\n");
+    print("  size(4,6):        "); print(size(shape_4x6)); print("\n");
+    print("  size((2,2),6):    "); print(size(shape_22x6)); print("\n");
+    std::cout << "  结果: ✅ 兼容（4 可以分解为 (2,2)）\n";
+
+    std::cout << "\n【示例 4】Shape ((2,2),6) vs Shape ((2,2),(3,2))\n";
+    print("  shape_((2,2),6):       "); print(shape_22x6); print("\n");
+    print("  shape_((2,2),(3,2)):   "); print(shape_22x32); print("\n");
+    print("  size((2,2),6):         "); print(size(shape_22x6)); print("\n");
+    print("  size((2,2),(3,2)):     "); print(size(shape_22x32)); print("\n");
+    std::cout << "  结果: ✅ 兼容（6 可以分解为 (3,2)）\n";
+
+    std::cout << "\n【示例 5】Shape 24 vs Shape ((2,2),(3,2)) - 传递性\n";
+    print("  shape_24:               "); print(shape_24); print("\n");
+    print("  shape_((2,2),(3,2)):    "); print(shape_22x32); print("\n");
+    std::cout << "  传递链：24 → (4,6) → ((2,2),6) → ((2,2),(3,2))\n";
+    std::cout << "  结果: ✅ 兼容（通过传递性）\n";
+
+    std::cout << "\n【示例 6】Shape ((2,3),4) vs Shape ((2,2),(3,2))\n";
+    print("  shape_((2,3),4):        "); print(shape_23x4); print("\n");
+    print("  shape_((2,2),(3,2)):    "); print(shape_22x32); print("\n");
+    print("  size((2,3),4):          "); print(size(shape_23x4)); print("\n");
+    print("  size((2,2),(3,2)):      "); print(size(shape_22x32)); print("\n");
+    std::cout << "  分析：\n";
+    std::cout << "    ((2,3),4): 外层 6 个元素，内层 4 个元素\n";
+    std::cout << "    ((2,2),(3,2)): 外层 4 个元素，内层 6 个元素\n";
+    std::cout << "  结果: ❌ 不兼容（层次结构不匹配）\n";
+
+    std::cout << "\n【示例 7】Shape 24 vs Shape (24)\n";
+    print("  shape_24:     "); print(shape_24); print("\n");
+    print("  shape_(24):   "); print(shape_tuple24); print("\n");
+    print("  rank(24):     "); print(rank(shape_24)); print("\n");
+    print("  rank((24)):   "); print(rank(shape_tuple24)); print("\n");
+    std::cout << "  结果: ✅ 兼容（整数可以变成单元素 tuple）\n";
+    std::cout << "        但反过来 (24) → 24 不兼容\n";
+
+    // 实际应用示例
+    print_section("兼容性实际应用 - 张量重塑");
+
+    std::cout << "\n将一维数据重塑为多维张量：\n";
+    
+    // 创建一维布局
+    auto layout_1d = make_layout(make_shape(24));
+    std::cout << "\n原始一维布局:\n";
+    print("  Layout: "); print(layout_1d); print("\n");
+    
+    // 重塑为 4x6
+    auto layout_2d = make_layout(make_shape(Int<4>{}, Int<6>{}));
+    std::cout << "\n重塑为 4x6:\n";
+    print("  Layout: "); print(layout_2d); print("\n");
+    print_layout(layout_2d);
+    
+    // 重塑为层次化 ((2,2),6)
+    auto layout_hier = make_layout(make_shape(make_shape(Int<2>{}, Int<2>{}), Int<6>{}));
+    std::cout << "\n重塑为层次化 ((2,2),6):\n";
+    print("  Layout: "); print(layout_hier); print("\n");
+    print_layout(layout_hier);
+
+    std::cout << "\n这些布局都有 24 个元素，可以相互转换（前提是数据布局匹配）。\n";
+
+    print_section("测试完成！");
     
     return 0;
 }
