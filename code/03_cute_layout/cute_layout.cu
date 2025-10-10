@@ -362,6 +362,115 @@ int main() {
     std::cout << "   每个元素 (i, (j, k)) 映射到索引 i*3 + j*12 + k*1\n";
     std::cout << "   这就是 CuTe 的灵活性！\n";
 
+    // ============================================================
+    // 复杂布局示例：Tensor Core 数据排列
+    // ============================================================
+    print_section("复杂布局示例 - Tensor Core 风格");
+
+    std::cout << "\n创建复杂的层次化布局：\n";
+    std::cout << "Shape:  ((_4,_8),(_2,_2))\n";
+    std::cout << "Stride: ((_16,_1),(_8,_64))\n\n";
+    
+    // 创建复杂布局
+    auto complex_shape = make_shape(
+        make_shape(Int<4>{}, Int<8>{}),
+        make_shape(Int<2>{}, Int<2>{})
+    );
+    auto complex_stride = make_stride(
+        make_stride(Int<16>{}, Int<1>{}),
+        make_stride(Int<8>{}, Int<64>{})
+    );
+    auto complex_layout = make_layout(complex_shape, complex_stride);
+
+    print("布局信息：\n");
+    print("  Layout: "); print(complex_layout); print("\n");
+    print("  Shape:  "); print(shape(complex_layout)); print("\n");
+    print("  Stride: "); print(stride(complex_layout)); print("\n");
+    print("  Size:   "); print(size(complex_layout)); print("\n");
+    print("  Cosize: "); print(cosize(complex_layout)); print("\n");
+    print("  Rank:   "); print(rank(complex_layout)); print("\n");
+    print("  Depth:  "); print(depth(complex_layout)); print("\n");
+
+    std::cout << "\n打印 2D 布局（前 8x4 部分）：\n";
+    print_layout(complex_layout);
+
+    std::cout << "\n生成 LaTeX 可视化：\n";
+    std::cout << "（LaTeX 代码已输出到终端，可以保存到 .tex 文件编译查看）\n";
+    print_latex(complex_layout);
+
+    print_section("坐标和索引转换示例");
+
+    std::cout << "\n选取几个典型元素进行分析：\n\n";
+
+    // 示例 1：第一个元素
+    std::cout << "【示例 1】第一个元素 (0,0,0,0)：\n";
+    auto c_coord1 = make_coord(
+        make_coord(Int<0>{}, Int<0>{}),
+        make_coord(Int<0>{}, Int<0>{})
+    );
+    int c_idx1 = complex_layout(c_coord1);
+    print("  坐标: "); print(c_coord1); print("\n");
+    printf("  索引: %d\n", c_idx1);
+    printf("  计算: 0*16 + 0*1 + 0*8 + 0*64 = %d\n", c_idx1);
+
+    // 示例 2：使用不同坐标形式
+    std::cout << "\n【示例 2】元素 (1,2,1,0)：\n";
+    auto c_coord2 = make_coord(
+        make_coord(Int<1>{}, Int<2>{}),
+        make_coord(Int<1>{}, Int<0>{})
+    );
+    int c_idx2 = complex_layout(c_coord2);
+    print("  坐标: "); print(c_coord2); print("\n");
+    printf("  索引: %d\n", c_idx2);
+    printf("  计算: 1*16 + 2*1 + 1*8 + 0*64 = %d\n", c_idx2);
+    
+    // 使用 crd2idx 验证
+    int c_idx2_verify = crd2idx(c_coord2, complex_shape, complex_stride);
+    printf("  验证(crd2idx): %d %s\n", c_idx2_verify, 
+           c_idx2 == c_idx2_verify ? "✓" : "✗");
+
+    // 示例 3：更复杂的坐标
+    std::cout << "\n【示例 3】元素 (3,7,1,1)：\n";
+    auto c_coord3 = make_coord(
+        make_coord(Int<3>{}, Int<7>{}),
+        make_coord(Int<1>{}, Int<1>{})
+    );
+    int c_idx3 = complex_layout(c_coord3);
+    print("  坐标: "); print(c_coord3); print("\n");
+    printf("  索引: %d\n", c_idx3);
+    printf("  计算: 3*16 + 7*1 + 1*8 + 1*64 = %d\n", c_idx3);
+
+    // 示例 4：从一维索引反推坐标
+    std::cout << "\n【示例 4】从一维索引反推坐标：\n";
+    int linear_idx = 50;
+    auto nat_coord = idx2crd(linear_idx, complex_shape);
+    printf("  一维索引: %d\n", linear_idx);
+    print("  自然坐标: "); print(nat_coord); print("\n");
+    int back_idx = complex_layout(nat_coord);
+    printf("  反算索引: %d\n", back_idx);
+    
+    print_section("布局特性分析");
+
+    std::cout << "\n这种布局的特点：\n";
+    std::cout << "1. 层次化结构：外层 (4,8)=32 个元素，内层 (2,2)=4 个元素\n";
+    std::cout << "2. 总共 32×4 = 128 个元素\n";
+    std::cout << "3. Stride 设计：\n";
+    std::cout << "   - (_16,_1): 第一维度外层步长16，内层步长1（连续）\n";
+    std::cout << "   - (_8,_64): 第二维度外层步长8，内层步长64（跳跃）\n";
+    std::cout << "4. 这种排列方式通常用于：\n";
+    std::cout << "   - Tensor Core 硬件加速\n";
+    std::cout << "   - WMMA (Warp Matrix Multiply Accumulate) 操作\n";
+    std::cout << "   - 优化的矩阵分块和数据重用\n";
+
+    std::cout << "\n前 16 个元素的索引分布：\n";
+    for (int i = 0; i < 16; i++) {
+        auto c = idx2crd(i, complex_shape);
+        int idx = complex_layout(c);
+        printf("  1-D[%2d] -> ", i);
+        print(c);
+        printf(" -> Idx: %3d\n", idx);
+    }
+
     print_section("测试完成！");
     
     return 0;

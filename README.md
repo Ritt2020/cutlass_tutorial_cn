@@ -17,6 +17,7 @@
 1. [安装配置](doc/01.安装配置.md)
 2. [简单矩阵乘 GEMM](doc/02.简单矩阵乘%20GEMM.md)
 3. [CuTe Layout](doc/03.CuTe_Layout.md)
+4. [CuTe Layout Algebra](doc/04.CuTe_Layout_Algebra.md)
 
 ### 附录
 - [附录1. 数据类型](doc/附录1.%20数据类型.md)
