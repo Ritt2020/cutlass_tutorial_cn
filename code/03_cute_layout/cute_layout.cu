@@ -269,6 +269,99 @@ int main() {
 
     std::cout << "\n这些布局都有 24 个元素，可以相互转换（前提是数据布局匹配）。\n";
 
+    // ============================================================
+    // 布局坐标映射测试
+    // ============================================================
+    print_section("布局坐标 (Layout Coordinates)");
+
+    std::cout << "\n创建层次化布局 (3,(2,3)):(3,(12,1)):\n";
+    auto coord_shape = make_shape(Int<3>{}, make_shape(Int<2>{}, Int<3>{}));
+    auto coord_stride = make_stride(Int<3>{}, make_stride(Int<12>{}, Int<1>{}));
+    auto coord_layout = make_layout(coord_shape, coord_stride);
+    
+    print("  Layout: "); print(coord_layout); print("\n");
+    print("  Shape:  "); print(coord_shape); print("\n");
+    print("  Stride: "); print(coord_stride); print("\n");
+    print("  Size:   "); print(size(coord_layout)); print("\n");
+
+    print_section("坐标映射示例 - idx2crd");
+    
+    std::cout << "\nShape (3,(2,3)) 的坐标转换表（前10个）：\n";
+    std::cout << "| 1-D | 2-D    | 自然坐标    | 索引 |\n";
+    std::cout << "|-----|--------|------------|------|\n";
+    for (int i = 0; i < 10; i++) {
+        auto nat_coord = idx2crd(i, coord_shape);
+        int idx = coord_layout(i);
+        printf("| %3d | ", i);
+        // 计算 2D 坐标
+        int j = i / 3;
+        int k = i % 3;
+        printf("(%d,%d)  | ", k, j);
+        print(nat_coord);
+        printf(" | %4d |\n", idx);
+    }
+
+    std::cout << "\n【示例 1】使用 1-D 坐标访问：\n";
+    int idx1 = 16;
+    auto nat1 = idx2crd(idx1, coord_shape);
+    int result1 = coord_layout(idx1);
+    std::cout << "  coord_layout(" << idx1 << ")\n";
+    print("  自然坐标: "); print(nat1); print("\n");
+    printf("  索引结果: %d\n", result1);
+
+    std::cout << "\n【示例 2】使用 2-D 坐标访问：\n";
+    int i2 = 1, j2 = 5;
+    int result2 = coord_layout(i2, j2);
+    std::cout << "  coord_layout(" << i2 << ", " << j2 << ")\n";
+    printf("  索引结果: %d\n", result2);
+
+    std::cout << "\n【示例 3】使用自然坐标访问：\n";
+    auto nat_coord3 = make_coord(Int<1>{}, make_coord(Int<1>{}, Int<2>{}));
+    int result3 = coord_layout(nat_coord3);
+    std::cout << "  coord_layout";
+    print(nat_coord3);
+    print("\n");
+    printf("  索引结果: %d\n", result3);
+    std::cout << "  计算: 1*3 + 1*12 + 2*1 = " << (1*3 + 1*12 + 2*1) << "\n";
+
+    print_section("索引映射示例 - crd2idx");
+
+    std::cout << "\n验证不同坐标形式产生相同索引：\n";
+    
+    // 使用 1-D 坐标
+    int idx_1d = crd2idx(16, coord_shape, coord_stride);
+    std::cout << "  crd2idx(16) = " << idx_1d << "\n";
+    
+    // 使用 2-D 坐标
+    int idx_2d = crd2idx(make_coord(1, 5), coord_shape, coord_stride);
+    std::cout << "  crd2idx((1,5)) = " << idx_2d << "\n";
+    
+    // 使用自然坐标
+    int idx_nat = crd2idx(make_coord(1, make_coord(1, 2)), coord_shape, coord_stride);
+    std::cout << "  crd2idx((1,(1,2))) = " << idx_nat << "\n";
+    
+    std::cout << "\n所有坐标都映射到同一个索引！\n";
+
+    print_section("坐标系统对比");
+
+    std::cout << "\n同一个布局可以用三种方式理解：\n\n";
+    
+    std::cout << "1. 作为 1-D 数组（18 个元素）：\n";
+    std::cout << "   [";
+    for (int i = 0; i < 18; i++) {
+        std::cout << coord_layout(i);
+        if (i < 17) std::cout << ", ";
+        if (i == 8) std::cout << "\n    ";
+    }
+    std::cout << "]\n";
+    
+    std::cout << "\n2. 作为 2-D 矩阵（3×6）：\n";
+    print_layout(coord_layout);
+    
+    std::cout << "\n3. 作为层次化张量 3×(2×3)：\n";
+    std::cout << "   每个元素 (i, (j, k)) 映射到索引 i*3 + j*12 + k*1\n";
+    std::cout << "   这就是 CuTe 的灵活性！\n";
+
     print_section("测试完成！");
     
     return 0;

@@ -9,15 +9,15 @@ NVCC = nvcc
 # 编译选项
 NVCC_FLAGS = -std=c++17 \
              -I$(CUTLASS_DIR)/include \
-             -arch=sm_80 \
+             -arch=sm_90a \
              -O3 \
              --expt-relaxed-constexpr
 
 # 目标文件
-TARGET = test_layout
+TARGET = cute_layout
 
 # 源文件
-SOURCES = test_layout.cu
+SOURCES = cute_layout.cu
 
 # 默认目标
 all: $(TARGET)
