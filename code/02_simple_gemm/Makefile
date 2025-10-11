@@ -7,7 +7,7 @@ NVCC = nvcc
 CXX = g++
 
 # CUTLASS 路径设置
-CUTLASS_ROOT = /sharedir44-48/wanghy/cutlass
+CUTLASS_ROOT = ../../cutlass
 CUTLASS_INCLUDE = $(CUTLASS_ROOT)/include
 CUTLASS_UTIL_INCLUDE = $(CUTLASS_ROOT)/tools/util/include
 
@@ -15,7 +15,7 @@ CUTLASS_UTIL_INCLUDE = $(CUTLASS_ROOT)/tools/util/include
 INCLUDES = -I$(CUTLASS_INCLUDE) -I$(CUTLASS_UTIL_INCLUDE)
 
 # 编译选项
-NVCC_FLAGS = -O3 -std=c++17 -arch=sm_80 -w --expt-relaxed-constexpr
+NVCC_FLAGS = -O3 -std=c++17 -arch=sm_90a -w --expt-relaxed-constexpr
 CXX_FLAGS = -O3 -std=c++17 -w
 
 # 目标文件
