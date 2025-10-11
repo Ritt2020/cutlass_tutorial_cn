@@ -71,3 +71,21 @@ cutlass_tutorial_cn/
 ### 附录
 - [附录1. 数据类型](doc/附录1.%20数据类型.md)
 - [附录2. 矩阵布局](doc/附录2.%20矩阵布局.md)
+
+## 参考资料
+
+以下是学习 CUTLASS 和 CuTe 的官方资源，强烈推荐配合本教程一起阅读：
+
+### 官方文档
+- [CUTLASS 官方文档](https://docs.nvidia.com/cutlass/index.html) - NVIDIA 官方维护的完整文档，包含 API 参考和架构说明
+- [CUTLASS GitHub Wiki](https://github.com/NVIDIA/cutlass/wiki/Documentation) - GitHub 上的文档 Wiki，包含更多实践示例
+
+### 博客文章
+- [CUTLASS: Fast Linear Algebra in CUDA C++](https://developer.nvidia.com/blog/cutlass-linear-algebra-cuda/) - NVIDIA 开发者博客的入门介绍
+
+### 代码仓库
+- [CUTLASS GitHub Repository](https://github.com/NVIDIA/cutlass) - CUTLASS 的源代码仓库，包含丰富的示例代码
+
+## 贡献
+
+欢迎通过 Issue 或 Pull Request 为本教程做出贡献！
