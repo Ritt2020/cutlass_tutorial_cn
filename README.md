@@ -64,7 +64,9 @@ cutlass_tutorial_cn/
 4. [CuTe Layout Algebra](doc/04.CuTe_Layout_Algebra.md)
 5. [CuTe Tensor](doc/05.CuTe_Tensor.md)
 6. [CuTe Copy](doc/06.CuTe_Copy.md)
-7. [CuTe TMA Copy](doc/06.CuTe_TMA.md)
+7. [CuTe TMA Copy](doc/06.CuTe_TMA.md) TODO
+8. [CuTe MMA](doc/07.CuTe_MMA.md) TODO
+9. [Cutlass Pipeline](doc/08.Cutlass_Pipeline.md) TODO
 
 ### 附录
 - [附录1. 数据类型](doc/附录1.%20数据类型.md)
