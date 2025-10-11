@@ -52,7 +52,7 @@ cutlass_tutorial_cn/
     ├── 02_simple_gemm/
     ├── 03_cute_layout/
     ├── 04_cute_layout_algebra/
-    └── 05_cute_tensor/
+    └── ...
 ```
 
 ## 目录
