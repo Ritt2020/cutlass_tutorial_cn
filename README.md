@@ -13,8 +13,8 @@
 
 ## 目标架构
 
-本教程以 Hopper(sm_90) 架构为目标架构进行。如果你的架构低于 sm_90, 则以下内容你可以进行跳过：
-1. 第六节：TMA 拷贝部分
+本教程以 Hopper(sm_90) 架构为目标架构进行。相信每一个学习 CUTLASS 的读者都有相关环境，如果你的架构低于 sm_90, 则以下内容你可以进行跳过实践部分，但强烈推荐也进行相关学习：
+1. 第 7 节：TMA 拷贝部分
 2. 
 
 ## 如何使用本教程
@@ -53,6 +53,7 @@ cutlass_tutorial_cn/
     ├── 03_cute_layout/
     ├── 04_cute_layout_algebra/
     └── 05_cute_tensor/
+```
 
 ## 目录
 
@@ -62,7 +63,8 @@ cutlass_tutorial_cn/
 3. [CuTe Layout](doc/03.CuTe_Layout.md)
 4. [CuTe Layout Algebra](doc/04.CuTe_Layout_Algebra.md)
 5. [CuTe Tensor](doc/05.CuTe_Tensor.md)
-6. [CuTe Copy and TMA](doc/06.CuTe_Copy.md)
+6. [CuTe Copy](doc/06.CuTe_Copy.md)
+7. [CuTe TMA Copy](doc/06.CuTe_TMA.md)
 
 ### 附录
 - [附录1. 数据类型](doc/附录1.%20数据类型.md)
